@@ -15,6 +15,6 @@ transactionRoutes.post('/', authMiddleware.authMiddleware, transactionController
  */
 
 transactionRoutes.post('/system/initial-funds', authMiddleware.authSystemUsermiddleware, transactionController.createInitialFunds)
-
+transactionRoutes.get('/history/:accountId', authMiddleware.authMiddleware, transactionController.transactionHistory)
 
 module.exports = transactionRoutes;

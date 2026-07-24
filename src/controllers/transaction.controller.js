@@ -3,6 +3,7 @@ const ledgerModel = require('../models/ledger.model');
 const accountModel = require('../models/account.model');
 const emailService = require('../services/email.service');
 const mongoose = require('mongoose');
+const ApiResponse = require('../utility/apiResponse.js')
 
 /**
  * - Create a new transaction
@@ -27,14 +28,14 @@ async function createTransaction(req, res) {
 
     const { fromAccount, toAccount, amount, idempotencyKey } = req.body;
 
-    if(!fromAccount || !toAccount || !amount || !idempotencyKey){
+    if (!fromAccount || !toAccount || !amount || !idempotencyKey) {
         return res.status(400).json({
             message: 'Missing required fields',
             status: 'failed'
         })
     }
 
-    if(fromAccount === toAccount){
+    if (fromAccount === toAccount) {
         return res.status(400).json({
             message: 'Cannot transfer to the same account',
             status: 'failed'
@@ -44,7 +45,7 @@ async function createTransaction(req, res) {
     const fromAccountData = await accountModel.findById({ _id: fromAccount });
     const toAccountData = await accountModel.findById({ _id: toAccount });
 
-    if(!fromAccountData || !toAccountData){
+    if (!fromAccountData || !toAccountData) {
         return res.status(404).json({
             message: 'Account not found',
             status: 'failed'
@@ -57,8 +58,8 @@ async function createTransaction(req, res) {
 
     const isTransactionAlreadyExists = await transactionModel.findOne({ idempotencyKey: idempotencyKey });
 
-    if(isTransactionAlreadyExists){
-        if(isTransactionAlreadyExists.status === 'SUCCESSFUL'){
+    if (isTransactionAlreadyExists) {
+        if (isTransactionAlreadyExists.status === 'SUCCESSFUL') {
             return res.status(200).json({
                 message: 'Transaction already processed',
                 status: 'success',
@@ -66,21 +67,21 @@ async function createTransaction(req, res) {
             })
         }
 
-        if(isTransactionAlreadyExists.status === 'PENDING'){
+        if (isTransactionAlreadyExists.status === 'PENDING') {
             return res.status(200).json({
                 message: 'Transaction is being processed',
                 status: 'success'
             })
         }
 
-        if(isTransactionAlreadyExists.status === 'FAILED'){
+        if (isTransactionAlreadyExists.status === 'FAILED') {
             return res.status(200).json({
                 message: 'Transaction already processed and failed',
                 status: 'failed'
             })
         }
 
-        if(isTransactionAlreadyExists.status === 'REFUNDED'){
+        if (isTransactionAlreadyExists.status === 'REFUNDED') {
             return res.status(200).json({
                 message: 'Transaction already processed and refunded',
                 status: 'failed'
@@ -92,7 +93,7 @@ async function createTransaction(req, res) {
      * 3. Check account status
      */
 
-    if(fromAccountData.status !== 'ACTIVE' || toAccountData.status !== 'ACTIVE'){
+    if (fromAccountData.status !== 'ACTIVE' || toAccountData.status !== 'ACTIVE') {
         return res.status(400).json({
             message: 'Both accounts must be active',
             status: 'failed'
@@ -105,7 +106,7 @@ async function createTransaction(req, res) {
 
     const senderBalance = await fromAccountData.getBalance();
 
-    if(senderBalance < amount){
+    if (senderBalance < amount) {
         return res.status(400).json({
             message: `Insufficient balance. Current balance is ${senderBalance}. Required amount is ${amount}`,
             status: 'failed'
@@ -118,7 +119,7 @@ async function createTransaction(req, res) {
 
     let transaction;
 
-    try{
+    try {
 
         const session = await transactionModel.startSession();
         session.startTransaction();
@@ -136,7 +137,7 @@ async function createTransaction(req, res) {
             transaction: transaction._id,
             type: 'DEBIT',
             amount: amount
-        }], { session }); 
+        }], { session });
 
         const creditLedgerEntry = await ledgerModel.create([{
             account: toAccount,
@@ -150,7 +151,7 @@ async function createTransaction(req, res) {
         await session.commitTransaction();
         session.endSession();
 
-    }catch(err){
+    } catch (err) {
         return res.status(400).json({
             message: 'Transaction is still being processed. Please try again later',
             status: 'failed',
@@ -171,10 +172,10 @@ async function createTransaction(req, res) {
 
 }
 
-async function createInitialFunds(req, res){
+async function createInitialFunds(req, res) {
     const { toAccount, amount, idempotencyKey } = req.body;
 
-    if(!toAccount || !amount || !idempotencyKey){
+    if (!toAccount || !amount || !idempotencyKey) {
         return res.status(400).json({
             message: 'Missing required fields',
             status: 'failed'
@@ -183,8 +184,8 @@ async function createInitialFunds(req, res){
 
     const isTransactionAlreadyExists = await transactionModel.findOne({ idempotencyKey: idempotencyKey });
 
-    if(isTransactionAlreadyExists){
-        if(isTransactionAlreadyExists.status === 'SUCCESSFUL'){
+    if (isTransactionAlreadyExists) {
+        if (isTransactionAlreadyExists.status === 'SUCCESSFUL') {
             return res.status(200).json({
                 message: 'Transaction already processed',
                 status: 'success',
@@ -192,21 +193,21 @@ async function createInitialFunds(req, res){
             })
         }
 
-        if(isTransactionAlreadyExists.status === 'PENDING'){
+        if (isTransactionAlreadyExists.status === 'PENDING') {
             return res.status(200).json({
                 message: 'Transaction is being processed',
                 status: 'success'
             })
         }
 
-        if(isTransactionAlreadyExists.status === 'FAILED'){
+        if (isTransactionAlreadyExists.status === 'FAILED') {
             return res.status(200).json({
                 message: 'Transaction already processed and failed',
                 status: 'failed'
             })
         }
 
-        if(isTransactionAlreadyExists.status === 'REFUNDED'){
+        if (isTransactionAlreadyExists.status === 'REFUNDED') {
             return res.status(200).json({
                 message: 'Transaction already processed and refunded',
                 status: 'failed'
@@ -216,7 +217,7 @@ async function createInitialFunds(req, res){
 
     const toAccountData = await accountModel.findById({ _id: toAccount });
 
-    if(!toAccountData){
+    if (!toAccountData) {
         return res.status(404).json({
             message: 'Account not found',
             status: 'failed'
@@ -227,7 +228,7 @@ async function createInitialFunds(req, res){
         user: req.user._id
     });
 
-    if(!fromUserAccount){
+    if (!fromUserAccount) {
         return res.status(404).json({
             message: 'System account not found for the user',
             status: 'failed'
@@ -272,4 +273,38 @@ async function createInitialFunds(req, res){
 
 }
 
-module.exports = {createTransaction, createInitialFunds}
+async function transactionHistory(req, res) {
+    const { accountId } = req.params
+    const { user } = req
+    console.log({ accountId, user })
+    if (!accountId) {
+        return res.status(400).json({
+            message: 'Missing accountId',
+            status: 'failed'
+        })
+    }
+
+    try {
+        const targetId = new mongoose.Types.ObjectId(accountId);
+        const history = await transactionModel.aggregate([
+            {
+                $match: {
+                    $or: [
+                        { fromAccount: targetId },
+                        { toAccount: targetId }
+                    ]
+                }
+            },
+            { $sort: { createdAt: -1 } }
+        ]);
+        return res.status(200).json(ApiResponse.success(200, 'transaction history fetched successfully', history))
+    } catch (err) {
+        return res.status(400).json({
+            message: 'Cannot fetch history. Please try again later',
+            status: 'failed',
+            error: err.message
+        })
+    }
+}
+
+module.exports = { createTransaction, createInitialFunds, transactionHistory }
