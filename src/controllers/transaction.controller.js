@@ -34,6 +34,13 @@ async function createTransaction(req, res) {
         })
     }
 
+    if(fromAccount === toAccount){
+        return res.status(400).json({
+            message: 'Cannot transfer to the same account',
+            status: 'failed'
+        })
+    }
+
     const fromAccountData = await accountModel.findById({ _id: fromAccount });
     const toAccountData = await accountModel.findById({ _id: toAccount });
 
