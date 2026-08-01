@@ -276,7 +276,7 @@ async function createInitialFunds(req, res) {
 async function transactionHistory(req, res) {
     const { accountId } = req.params
     const { user } = req
-    console.log({ accountId, user })
+
     if (!accountId) {
         return res.status(400).json({
             message: 'Missing accountId',

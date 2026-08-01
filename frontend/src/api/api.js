@@ -75,3 +75,9 @@ export function createTransaction({ fromAccount, toAccount, amount, idempotencyK
     body: JSON.stringify({ fromAccount, toAccount, amount, idempotencyKey }),
   });
 }
+
+export function getTransactionHistory(accountId) {
+  return request(`/transactions/history/${accountId}`, {
+    method: 'GET',
+  });
+}

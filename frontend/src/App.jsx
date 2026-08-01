@@ -5,6 +5,7 @@ import LoginPage from './pages/LoginPage';
 import RegisterPage from './pages/RegisterPage';
 import DashboardPage from './pages/DashboardPage';
 import TransferPage from './pages/TransferPage';
+import TransactionHistoryPage from './pages/TransactionHistoryPage';
 
 function PublicRoute({ children }) {
   const { isAuthenticated } = useAuth();
@@ -49,6 +50,14 @@ function AppRoutes() {
         element={
           <ProtectedRoute>
             <TransferPage />
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path="/history"
+        element={
+          <ProtectedRoute>
+            <TransactionHistoryPage />
           </ProtectedRoute>
         }
       />

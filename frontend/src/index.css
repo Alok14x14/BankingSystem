@@ -814,6 +814,233 @@ a:hover {
 }
 
 /* ───────────────────────────────────────────────
+   Transaction History
+   ─────────────────────────────────────────────── */
+.txn-controls {
+  margin-bottom: var(--space-xl);
+}
+
+.txn-controls-row {
+  display: flex;
+  gap: var(--space-md);
+  flex-wrap: wrap;
+  align-items: flex-end;
+}
+
+/* Summary Row */
+.txn-summary-row {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: var(--space-md);
+  margin-bottom: var(--space-xl);
+}
+
+.txn-summary-card {
+  padding: var(--space-lg);
+  text-align: center;
+  position: relative;
+  overflow: hidden;
+}
+
+.txn-summary-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 3px;
+  background: linear-gradient(90deg, var(--color-primary), var(--color-accent));
+  border-radius: var(--radius-lg) var(--radius-lg) 0 0;
+}
+
+.txn-summary-sent::before {
+  background: linear-gradient(90deg, var(--color-error), #f97316);
+}
+
+.txn-summary-received::before {
+  background: linear-gradient(90deg, var(--color-success), #22d3ee);
+}
+
+.txn-summary-label {
+  font-size: var(--font-size-xs);
+  color: var(--text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  margin-bottom: var(--space-xs);
+}
+
+.txn-summary-value {
+  font-size: var(--font-size-2xl);
+  font-weight: 700;
+  color: var(--text-primary);
+}
+
+/* Transaction List */
+.txn-list {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-sm);
+}
+
+.txn-row {
+  display: flex;
+  align-items: center;
+  gap: var(--space-md);
+  padding: var(--space-md) var(--space-lg);
+  animation: fadeInUp 0.4s ease forwards;
+  opacity: 0;
+}
+
+.txn-row:hover {
+  border-color: var(--border-subtle);
+}
+
+/* Transaction Icon */
+.txn-icon {
+  flex-shrink: 0;
+  width: 44px;
+  height: 44px;
+  border-radius: var(--radius-md);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: transform var(--transition-fast);
+}
+
+.txn-row:hover .txn-icon {
+  transform: scale(1.08);
+}
+
+.txn-icon-sent {
+  background: rgba(244, 63, 94, 0.12);
+  color: var(--color-error-light);
+  border: 1px solid rgba(244, 63, 94, 0.2);
+}
+
+.txn-icon-received {
+  background: rgba(16, 185, 129, 0.12);
+  color: var(--color-success-light);
+  border: 1px solid rgba(16, 185, 129, 0.2);
+}
+
+/* Transaction Details */
+.txn-details {
+  flex: 1;
+  min-width: 0;
+}
+
+.txn-details-top {
+  display: flex;
+  align-items: center;
+  gap: var(--space-sm);
+  margin-bottom: 4px;
+}
+
+.txn-details-bottom {
+  display: flex;
+  align-items: center;
+  gap: var(--space-xs);
+  font-size: var(--font-size-xs);
+  color: var(--text-muted);
+  flex-wrap: wrap;
+}
+
+.txn-counterparty {
+  font-family: 'Courier New', monospace;
+  font-size: var(--font-size-xs);
+}
+
+.txn-separator {
+  color: var(--text-muted);
+  opacity: 0.4;
+}
+
+.txn-date,
+.txn-time {
+  white-space: nowrap;
+}
+
+/* Type Badges */
+.txn-type-badge {
+  display: inline-flex;
+  align-items: center;
+  padding: 2px 10px;
+  border-radius: var(--radius-full);
+  font-size: 0.6875rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+}
+
+.txn-type-sent {
+  background: rgba(244, 63, 94, 0.12);
+  color: var(--color-error-light);
+  border: 1px solid rgba(244, 63, 94, 0.25);
+}
+
+.txn-type-received {
+  background: rgba(16, 185, 129, 0.12);
+  color: var(--color-success-light);
+  border: 1px solid rgba(16, 185, 129, 0.25);
+}
+
+.txn-type-self {
+  background: rgba(99, 102, 241, 0.12);
+  color: var(--color-primary-light);
+  border: 1px solid rgba(99, 102, 241, 0.25);
+}
+
+/* Status Badges */
+.txn-status-badge {
+  display: inline-flex;
+  align-items: center;
+  padding: 2px 10px;
+  border-radius: var(--radius-full);
+  font-size: 0.6875rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.txn-badge-success {
+  background: rgba(16, 185, 129, 0.1);
+  color: var(--color-success-light);
+}
+
+.txn-badge-pending {
+  background: rgba(245, 158, 11, 0.1);
+  color: var(--color-warning);
+}
+
+.txn-badge-failed {
+  background: rgba(244, 63, 94, 0.1);
+  color: var(--color-error-light);
+}
+
+.txn-badge-refunded {
+  background: rgba(99, 102, 241, 0.1);
+  color: var(--color-primary-light);
+}
+
+/* Transaction Amount */
+.txn-amount {
+  flex-shrink: 0;
+  font-size: var(--font-size-lg);
+  font-weight: 700;
+  letter-spacing: -0.01em;
+  text-align: right;
+  white-space: nowrap;
+}
+
+.txn-amount-sent {
+  color: var(--color-error-light);
+}
+
+.txn-amount-received {
+  color: var(--color-success-light);
+}
+
+/* ───────────────────────────────────────────────
    Scrollbar
    ─────────────────────────────────────────────── */
 ::-webkit-scrollbar {
@@ -859,5 +1086,24 @@ a:hover {
 
   .navbar-user span {
     display: none;
+  }
+
+  .txn-controls-row {
+    flex-direction: column;
+  }
+
+  .txn-row {
+    flex-wrap: wrap;
+    gap: var(--space-sm);
+  }
+
+  .txn-amount {
+    width: 100%;
+    text-align: left;
+    padding-left: 60px;
+  }
+
+  .txn-summary-row {
+    grid-template-columns: 1fr;
   }
 }

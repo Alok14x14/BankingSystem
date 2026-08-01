@@ -45,6 +45,9 @@ export default function Navbar() {
           <Link to="/transfer" className="btn btn-ghost" id="nav-transfer-link">
             Transfer
           </Link>
+          <Link to="/history" className="btn btn-ghost" id="nav-history-link">
+            History
+          </Link>
           <div className="navbar-user">
             <div className="navbar-avatar">{getInitials(user?.name)}</div>
             <span>{user?.name}</span>
