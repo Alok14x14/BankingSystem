@@ -6,7 +6,7 @@ const app = express();
 app.use(express.json());
 app.use(cookieParser());
 
-app.get('/', (req, res) => {
+app.get(['/', '/api'], (req, res) => {
     res.status(200).json({
         message: 'Welcome to the Banking System API',
         status: 'success'
@@ -16,7 +16,7 @@ app.get('/', (req, res) => {
 /**
 * - Routes required
 */
-const authRouter = require('../src/routes/auth.routes');
+const authRouter = require('./routes/auth.routes');
 const accountRouter = require('./routes/account.routes');
 const transactionRoutes = require('./routes/transaction.routes');
 
